@@ -6,15 +6,15 @@ function MartiniLogo({ size = 80 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Glass bowl */}
-      <path d="M12 18 L40 54 L68 18 Z" fill="rgba(249,115,22,0.15)" stroke="#F97316" strokeWidth="3" strokeLinejoin="round"/>
+      <path d="M10 16 L40 56 L70 16 Z" fill="rgba(255,255,255,0.2)" stroke="white" strokeWidth="3.5" strokeLinejoin="round"/>
       {/* Stem */}
-      <line x1="40" y1="54" x2="40" y2="68" stroke="#F97316" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="40" y1="56" x2="40" y2="70" stroke="white" strokeWidth="3.5" strokeLinecap="round"/>
       {/* Base */}
-      <line x1="28" y1="68" x2="52" y2="68" stroke="#F97316" strokeWidth="3" strokeLinecap="round"/>
-      {/* Olive */}
-      <circle cx="40" cy="30" r="5" fill="#14B8A6"/>
+      <line x1="26" y1="70" x2="54" y2="70" stroke="white" strokeWidth="3.5" strokeLinecap="round"/>
       {/* Olive pick */}
-      <line x1="28" y1="30" x2="52" y2="30" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="24" y1="32" x2="56" y2="32" stroke="rgba(255,255,255,0.7)" strokeWidth="2" strokeLinecap="round"/>
+      {/* Olive */}
+      <circle cx="40" cy="32" r="6" fill="#14B8A6" stroke="white" strokeWidth="1.5"/>
     </svg>
   );
 }
