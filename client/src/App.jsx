@@ -52,7 +52,8 @@ function AppInner() {
   // Setup socket when authenticated
   useEffect(() => {
     if (auth.isAuthenticated && auth.token && !socketRef.current) {
-      socketRef.current = io('/', {
+      const socketUrl = import.meta.env.VITE_API_URL || '/';
+      socketRef.current = io(socketUrl, {
         auth: { token: auth.token },
         transports: ['websocket', 'polling'],
       });
