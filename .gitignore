@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Environment
+.env
+server/.env
+client/.env
+
+# Build
+client/dist/
+
+# OS
+.DS_Store
+
+# Logs
+*.log

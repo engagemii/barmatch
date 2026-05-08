@@ -1,0 +1,240 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  height: -webkit-fill-available;
+  background: #0A0A0F;
+}
+
+body {
+  background: #0A0A0F;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  margin: 0;
+  padding: 0;
+  /* iOS Safari full-height fix */
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  min-height: 100dvh;
+  /* Prevent iOS rubber-band scroll */
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Safe areas for mobile (notch / home bar) */
+.safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* App container — mobile first, full-height */
+.app-container {
+  max-width: 430px;
+  width: 100%;
+  margin: 0 auto;
+  height: 100vh;
+  height: -webkit-fill-available;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: #0A0A0F;
+}
+
+/* Scrollable inner areas (chat, messages) */
+.scroll-area {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Orange gradient */
+.bg-orange-gradient {
+  background: linear-gradient(135deg, #F97316, #EA6C00);
+}
+
+/* Purple gradient */
+.bg-purple-gradient {
+  background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+
+/* Card gradient */
+.bg-card-gradient {
+  background: linear-gradient(180deg, #15102B 0%, #231847 100%);
+}
+
+/* Input base styles */
+.input-dark {
+  background: #15102B;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  padding: 14px 16px;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-dark:focus {
+  border-color: #F97316;
+}
+
+.input-dark::placeholder {
+  color: #6B7280;
+}
+
+/* Button base */
+.btn-primary {
+  background: linear-gradient(135deg, #F97316, #EA6C00);
+  border-radius: 12px;
+  color: white;
+  font-weight: 600;
+  padding: 16px;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* Swipe card transition */
+.swipe-card {
+  position: absolute;
+  width: 100%;
+  touch-action: none;
+  will-change: transform;
+}
+
+/* Match animation sparkles */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-sparkle {
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+/* Chip / pill */
+.chip {
+  background: #231847;
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.15s;
+}
+
+.chip.selected {
+  background: linear-gradient(135deg, #F97316, #EA6C00);
+  border-color: transparent;
+}
+
+.chip.teal {
+  background: rgba(20, 184, 166, 0.2);
+  border-color: rgba(20, 184, 166, 0.4);
+  color: #14B8A6;
+}
+
+.chip.teal.selected {
+  background: #14B8A6;
+  color: white;
+  border-color: transparent;
+}
+
+/* Glow effects */
+.glow-orange {
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.4);
+}
+
+.glow-purple {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
+}
+
+/* Loading spinner */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #F97316;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
