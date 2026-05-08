@@ -2,6 +2,23 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
+function MartiniLogo({ size = 80 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Glass bowl */}
+      <path d="M12 18 L40 54 L68 18 Z" fill="rgba(249,115,22,0.15)" stroke="#F97316" strokeWidth="3" strokeLinejoin="round"/>
+      {/* Stem */}
+      <line x1="40" y1="54" x2="40" y2="68" stroke="#F97316" strokeWidth="3" strokeLinecap="round"/>
+      {/* Base */}
+      <line x1="28" y1="68" x2="52" y2="68" stroke="#F97316" strokeWidth="3" strokeLinecap="round"/>
+      {/* Olive */}
+      <circle cx="40" cy="30" r="5" fill="#14B8A6"/>
+      {/* Olive pick */}
+      <line x1="28" y1="30" x2="52" y2="30" stroke="#F97316" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
 export default function Splash() {
   const navigate = useNavigate();
 
@@ -12,29 +29,29 @@ export default function Splash() {
 
       {/* Center content */}
       <div className="flex flex-col items-center gap-6 w-full">
-        {/* Icon with glow */}
+        {/* Logo with glow */}
         <div className="relative">
-          <div className="absolute inset-0 rounded-3xl bg-orange opacity-40 blur-2xl scale-150" />
+          <div className="absolute inset-0 rounded-3xl bg-orange opacity-30 blur-2xl scale-150" />
           <motion.div
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative w-24 h-24 rounded-3xl bg-orange-gradient flex items-center justify-center text-5xl shadow-lg"
+            className="relative w-24 h-24 rounded-3xl bg-orange-gradient flex items-center justify-center shadow-lg"
             style={{ boxShadow: '0 0 60px rgba(249,115,22,0.5)' }}
           >
-            🍸
+            <MartiniLogo size={64} />
           </motion.div>
         </div>
 
         {/* Title */}
         <div className="text-center">
           <h1 className="text-5xl font-black text-orange tracking-tight leading-none">
-            BarMatch
+            ShiftMixr
           </h1>
           <p className="text-[#9CA3AF] text-base mt-3 leading-snug max-w-xs">
             Where bartenders and venues find their perfect fit
           </p>
           <p className="text-[#6B7280] text-sm mt-2 leading-snug max-w-xs">
-            The app that connects talented bartenders with venues that need them
+            Swipe, match, and get behind the bar
           </p>
         </div>
 

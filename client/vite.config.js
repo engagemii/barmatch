@@ -8,8 +8,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'BarMatch',
-        short_name: 'BarMatch',
+        name: 'ShiftMixr',
+        short_name: 'ShiftMixr',
         description: 'Where bartenders and venues find their perfect fit',
         theme_color: '#F97316',
         background_color: '#0A0A0F',

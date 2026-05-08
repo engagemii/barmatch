@@ -56,7 +56,7 @@ export default function Login() {
       <div className="mb-8">
         <div className="text-4xl mb-3">👋</div>
         <h1 className="text-3xl font-black text-white">Welcome Back</h1>
-        <p className="text-[#9CA3AF] text-sm mt-1">Sign in to your BarMatch account</p>
+        <p className="text-[#9CA3AF] text-sm mt-1">Sign in to your ShiftMixr account</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
