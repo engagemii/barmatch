@@ -1,6 +1,5 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const User = require('./models/User');
 
 const bartenders = [
@@ -397,7 +396,7 @@ async function seed() {
   await User.deleteMany({ email: /demo\.com$/ });
   console.log('Cleared existing demo users');
 
-  const password = await bcrypt.hash('Demo1234!', 12);
+  const password = 'Demo1234!';
 
   // Seed bartenders
   for (const b of bartenders) {
