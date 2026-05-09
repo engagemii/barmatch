@@ -1,16 +1,26 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 
 const SWIPE_THRESHOLD = 120;
 
 export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
-  const [{ x, rotate, opacity }, api] = useSpring(() => ({
+  const [{ x, rotate, opacity, scale, y }, api] = useSpring(() => ({
     x: 0,
     rotate: 0,
     opacity: 1,
-    config: { tension: 300, friction: 30 },
+    scale: isTop ? 1 : 1 - stackIndex * 0.04,
+    y: stackIndex * 14,
+    config: { tension: 280, friction: 28 },
   }));
+
+  // Smoothly animate scale/y when stack position changes
+  useEffect(() => {
+    api.start({
+      scale: isTop ? 1 : 1 - stackIndex * 0.04,
+      y: stackIndex * 14,
+    });
+  }, [stackIndex, isTop]);
 
   const isDragging = useRef(false);
   const [imgLoaded, setImgLoaded] = useState(false);
@@ -45,9 +55,6 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
   const rightOpacity = x.to((v) => Math.max(0, Math.min(1, v / SWIPE_THRESHOLD)));
   const leftOpacity  = x.to((v) => Math.max(0, Math.min(1, -v / SWIPE_THRESHOLD)));
 
-  const scale   = isTop ? 1 : 1 - stackIndex * 0.04;
-  const yOffset = stackIndex * 14;
-
   const p = user.profile || {};
   const isBartender = user.role === 'bartender';
   const photo = p.avatar || null;
@@ -60,7 +67,7 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
     <animated.div
       {...(isTop ? bind() : {})}
       style={{
-        x, rotate, opacity, scale, y: yOffset,
+        x, rotate, opacity, scale, y,
         touchAction: 'none',
         position: 'absolute',
         left: 0, right: 0, top: 0, bottom: 0,
