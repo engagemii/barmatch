@@ -48,25 +48,13 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
   const scale   = isTop ? 1 : 1 - stackIndex * 0.04;
   const yOffset = stackIndex * 14;
 
-  const p   = user.profile || {};
+  const p = user.profile || {};
   const isBartender = user.role === 'bartender';
   const photo = p.avatar || null;
 
-  // Background image or fallback gradient
   const fallbackBg = isBartender
     ? 'linear-gradient(135deg, #2D1B69, #1A0E3D)'
     : 'linear-gradient(135deg, #1A2740, #0A1520)';
-
-  const bgStyle = photo && imgLoaded
-    ? { backgroundImage: `url(${photo})`, backgroundSize: 'cover', backgroundPosition: 'center top' }
-    : { background: fallbackBg };
-
-  // Preload image
-  if (photo && !imgLoaded) {
-    const img = new Image();
-    img.src = photo;
-    img.onload = () => setImgLoaded(true);
-  }
 
   return (
     <animated.div
@@ -75,28 +63,45 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
         x, rotate, opacity, scale, y: yOffset,
         touchAction: 'none',
         position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
+        left: 0, right: 0, top: 0, bottom: 0,
         zIndex: 10 - stackIndex,
         cursor: isTop ? 'grab' : 'default',
         WebkitUserSelect: 'none',
         userSelect: 'none',
       }}
     >
-      <div
-        style={{
-          margin: 0,
-          height: '100%',
-          borderRadius: '20px',
-          overflow: 'hidden',
-          position: 'relative',
-          boxShadow: isTop ? '0 24px 64px rgba(0,0,0,0.7)' : '0 8px 24px rgba(0,0,0,0.4)',
-          transition: 'background-image 0.3s ease',
-          ...bgStyle,
-        }}
-      >
+      <div style={{
+        margin: 0,
+        height: '100%',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        position: 'relative',
+        background: fallbackBg,
+        boxShadow: isTop ? '0 24px 64px rgba(0,0,0,0.7)' : '0 8px 24px rgba(0,0,0,0.4)',
+      }}>
+        {/* Photo — fades in over fallback gradient, no layout shift */}
+        {photo && (
+          <img
+            src={photo}
+            alt=""
+            onLoad={() => setImgLoaded(true)}
+            draggable={false}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              opacity: imgLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+              pointerEvents: 'none',
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+            }}
+          />
+        )}
+
         {/* LIKE / PASS stamp overlays */}
         {isTop && (
           <>
@@ -140,19 +145,15 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
           </div>
         )}
 
-        {/* Full-screen gradient overlay — strong enough to read text */}
+        {/* Gradient overlay */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 5,
           background: 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 35%, rgba(0,0,0,0.65) 58%, rgba(0,0,0,0.96) 100%)',
         }} />
 
-        {/* Bottom info panel — padded up so chips clear the action buttons */}
+        {/* Bottom info panel */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, padding: '16px 18px 20px' }}>
-          {isBartender ? (
-            <BartenderInfo user={user} p={p} />
-          ) : (
-            <VenueInfo user={user} p={p} />
-          )}
+          {isBartender ? <BartenderInfo user={user} p={p} /> : <VenueInfo user={user} p={p} />}
         </div>
       </div>
     </animated.div>
@@ -162,7 +163,6 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
 function BartenderInfo({ user, p }) {
   return (
     <>
-      {/* Name + rating */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '2px' }}>
         <span style={{ color: 'white', fontSize: '24px', fontWeight: 800, lineHeight: 1.1 }}>
           {p.name || 'Bartender'}
@@ -171,30 +171,18 @@ function BartenderInfo({ user, p }) {
           <span style={{ color: '#9CA3AF', fontSize: '16px', fontWeight: 400 }}>{p.yearsExp} yrs</span>
         )}
       </div>
-
-      {/* Title */}
       <div style={{ color: '#F97316', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>
         {p.title || 'Bartender'}
       </div>
-
-      {/* Location */}
       {user.location?.neighborhood && (
         <div style={{ color: '#D1D5DB', fontSize: '12px', marginBottom: '10px' }}>
           📍 {user.location.neighborhood}, {user.location.city}
         </div>
       )}
-
-      {/* Tags */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {(p.specialties || []).slice(0, 3).map(s => (
-          <Chip key={s} label={s} variant="orange" />
-        ))}
-        {(p.certs || []).slice(0, 1).map(c => (
-          <Chip key={c} label={`✓ ${c}`} variant="yellow" />
-        ))}
-        {p.hourlyRate?.min && (
-          <Chip label={`$${p.hourlyRate.min}–$${p.hourlyRate.max}/hr`} variant="teal" />
-        )}
+        {(p.specialties || []).slice(0, 3).map(s => <Chip key={s} label={s} variant="orange" />)}
+        {(p.certs || []).slice(0, 1).map(c => <Chip key={c} label={`✓ ${c}`} variant="yellow" />)}
+        {p.hourlyRate?.min && <Chip label={`$${p.hourlyRate.min}–$${p.hourlyRate.max}/hr`} variant="teal" />}
       </div>
     </>
   );
@@ -203,38 +191,25 @@ function BartenderInfo({ user, p }) {
 function VenueInfo({ user, p }) {
   return (
     <>
-      {/* Name + price */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '2px' }}>
         <span style={{ color: 'white', fontSize: '24px', fontWeight: 800, lineHeight: 1.1 }}>
           {p.venueName || 'Venue'}
         </span>
-        {p.priceRange && (
-          <span style={{ color: '#9CA3AF', fontSize: '15px' }}>{p.priceRange}</span>
-        )}
+        {p.priceRange && <span style={{ color: '#9CA3AF', fontSize: '15px' }}>{p.priceRange}</span>}
       </div>
-
-      {/* Type + rating */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
         <span style={{ color: '#F97316', fontSize: '13px', fontWeight: 600 }}>{p.venueType}</span>
         {p.rating && <span style={{ color: '#D1D5DB', fontSize: '12px' }}>⭐ {p.rating}</span>}
         {p.seats && <span style={{ color: '#D1D5DB', fontSize: '12px' }}>· {p.seats} seats</span>}
       </div>
-
-      {/* Location */}
       {user.location?.neighborhood && (
         <div style={{ color: '#D1D5DB', fontSize: '12px', marginBottom: '10px' }}>
           📍 {user.location.neighborhood}, {user.location.city}
         </div>
       )}
-
-      {/* Tags */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {(p.vibe || []).slice(0, 3).map(v => (
-          <Chip key={v} label={v} variant="teal" />
-        ))}
-        {p.perks && (
-          <Chip label={`💰 ${p.perks}`} variant="green" />
-        )}
+        {(p.vibe || []).slice(0, 3).map(v => <Chip key={v} label={v} variant="teal" />)}
+        {p.perks && <Chip label={`💰 ${p.perks}`} variant="green" />}
       </div>
     </>
   );
@@ -251,12 +226,8 @@ function Chip({ label, variant = 'default' }) {
   return (
     <span style={{
       ...styles[variant],
-      borderRadius: '50px',
-      padding: '4px 10px',
-      fontSize: '11px',
-      fontWeight: 600,
-      backdropFilter: 'blur(4px)',
-      WebkitBackdropFilter: 'blur(4px)',
+      borderRadius: '50px', padding: '4px 10px', fontSize: '11px', fontWeight: 600,
+      backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)',
     }}>
       {label}
     </span>
