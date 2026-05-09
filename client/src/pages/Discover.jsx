@@ -22,7 +22,6 @@ export default function Discover() {
   }));
 
   const [loading, setLoading] = useState(false);
-  const [swiping, setSwiping] = useState(false);
   const [emptyStack, setEmptyStack] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -77,15 +76,14 @@ export default function Discover() {
   const toggleTag = (tag) => setPendingFilters(f => ({ ...f, selectedTags: f.selectedTags.includes(tag) ? f.selectedTags.filter(t => t !== tag) : [...f.selectedTags, tag] }));
   const toggleDay = (day) => setPendingFilters(f => ({ ...f, selectedDays: f.selectedDays.includes(day) ? f.selectedDays.filter(d => d !== day) : [...f.selectedDays, day] }));
 
-  const handleSwipe = async (direction, targetId) => {
-    if (swiping) return;
-    setSwiping(true);
-    try {
-      const res = await api.post('/swipe', { targetId, direction });
-      if (res.data.matched) showMatchModal({ matchId: res.data.matchId, otherUser: discover.stack[discover.currentIndex], myUser: auth.user });
-      advanceDiscover();
-    } catch { /* swipe errors are non-fatal — ignore */ }
-    finally { setSwiping(false); }
+  const handleSwipe = (direction, targetId) => {
+    const swipedUser = discover.stack[discover.currentIndex];
+    advanceDiscover(); // advance immediately — don't wait for API
+    api.post('/swipe', { targetId, direction })
+      .then(res => {
+        if (res.data.matched) showMatchModal({ matchId: res.data.matchId, otherUser: swipedUser, myUser: auth.user });
+      })
+      .catch(() => {}); // silent
   };
 
   const swipeTop = (dir) => { const c = discover.stack[discover.currentIndex]; if (c) handleSwipe(dir, c._id); };
@@ -171,19 +169,19 @@ export default function Discover() {
       {hasCards && (
         <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 20, padding: '12px 0 10px', background: '#0A0A0F' }}>
           {/* Pass */}
-          <motion.button whileTap={{ scale: 0.88 }} onClick={() => swipeTop('left')} disabled={swiping}
+          <motion.button whileTap={{ scale: 0.88 }} onClick={() => swipeTop('left')}
             style={{ width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1A0F0F', border: '2px solid rgba(239,68,68,0.5)', cursor: 'pointer', boxShadow: '0 4px 20px rgba(239,68,68,0.2)' }}>
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" strokeLinecap="round"/><line x1="6" y1="6" x2="18" y2="18" strokeLinecap="round"/></svg>
           </motion.button>
 
           {/* Super swipe */}
-          <motion.button whileTap={{ scale: 0.88 }} onClick={superSwipe} disabled={swiping}
+          <motion.button whileTap={{ scale: 0.88 }} onClick={superSwipe}
             style={{ width: 50, height: 50, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1A1500', border: '2px solid rgba(234,179,8,0.5)', cursor: 'pointer', boxShadow: '0 4px 20px rgba(234,179,8,0.2)' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#EAB308" stroke="#EAB308" strokeWidth="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </motion.button>
 
           {/* Like */}
-          <motion.button whileTap={{ scale: 0.88 }} onClick={() => swipeTop('right')} disabled={swiping}
+          <motion.button whileTap={{ scale: 0.88 }} onClick={() => swipeTop('right')}
             style={{ width: 64, height: 64, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0A1A18', border: '2px solid rgba(20,184,166,0.5)', cursor: 'pointer', boxShadow: '0 4px 20px rgba(20,184,166,0.2)' }}>
             <svg width="26" height="26" viewBox="0 0 24 24" fill="#14B8A6" stroke="#14B8A6" strokeWidth="1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </motion.button>
