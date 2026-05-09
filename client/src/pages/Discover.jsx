@@ -132,7 +132,17 @@ export default function Discover() {
             <div style={{ fontSize: 64 }}>🍸</div>
             <h2 style={{ color: 'white', fontSize: 20, fontWeight: 700 }}>You've seen everyone!</h2>
             <p style={{ color: '#9CA3AF', fontSize: 14 }}>Check back later as more {isBartender ? 'venues' : 'bartenders'} join.</p>
-            <button onClick={() => fetchStack(true)} className="btn-primary" style={{ maxWidth: 180 }}>Refresh</button>
+            <button onClick={() => fetchStack(true)} className="btn-primary" style={{ maxWidth: 200 }}>Refresh</button>
+            <button
+              onClick={async () => {
+                await api.delete('/swipe/reset');
+                setEmptyStack(false);
+                fetchStack(true);
+              }}
+              style={{ maxWidth: 200, width: '100%', padding: '14px', borderRadius: 12, border: '1px solid rgba(255,255,255,0.15)', background: 'transparent', color: '#9CA3AF', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            >
+              Reset &amp; Start Over
+            </button>
           </div>
         ) : (
           <div style={{ position: 'absolute', inset: '0 8px', overflow: 'hidden' }}>

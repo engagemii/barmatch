@@ -89,4 +89,17 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
+// DELETE /api/swipe/reset — clears all swipe history for the current user
+router.delete('/reset', auth, async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user.id, {
+      $set: { swipedRight: [], swipedLeft: [], superSwiped: [] },
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Reset error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
