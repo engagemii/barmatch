@@ -18,22 +18,33 @@ const setupSocket = require('./socket/index');
 const app = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = [
+  'https://shiftmixr.com',
+  'https://www.shiftmixr.com',
+  'https://client-black-theta-17.vercel.app',
+  'http://localhost:3010',
+];
+
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
+      cb(null, true);
+    } else {
+      cb(null, true); // permissive for now — tighten after launch
+    }
+  },
+  credentials: true,
+};
+
 // Socket.io setup
 const io = new Server(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
+  cors: { ...corsOptions, methods: ['GET', 'POST'] },
 });
 
 setupSocket(io);
 
 // Middleware
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
