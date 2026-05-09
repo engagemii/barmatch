@@ -56,6 +56,15 @@ export default function Discover() {
     if (remaining <= 3 && !loading && !emptyStack) fetchStack(false);
   }, [discover.currentIndex, discover.stack.length]);
 
+  // Preload images for upcoming cards so they're cached before the user sees them
+  useEffect(() => {
+    const upcoming = discover.stack.slice(discover.currentIndex, discover.currentIndex + 5);
+    upcoming.forEach(u => {
+      const src = u?.profile?.avatar;
+      if (src) { const img = new Image(); img.src = src; }
+    });
+  }, [discover.currentIndex, discover.stack.length]);
+
   const applyFilters = () => {
     setFilters(pendingFilters);
     setShowFilters(false);

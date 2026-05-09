@@ -101,7 +101,7 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
               objectFit: 'cover',
               objectPosition: 'center top',
               opacity: imgLoaded ? 1 : 0,
-              transition: 'opacity 0.4s ease',
+              transition: 'opacity 0.2s ease',
               pointerEvents: 'none',
               userSelect: 'none',
               WebkitUserSelect: 'none',
