@@ -13,17 +13,21 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [debugError, setDebugError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setDebugError('');
     if (!email || !password) {
-      toast.error('Please enter your email and password');
+      setDebugError('Missing email or password');
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api.post('/auth/login', { email, password });
+      const apiUrl = import.meta.env.VITE_API_URL || '(none — using proxy)';
+      setDebugError(`Trying: ${apiUrl}`);
+      const res = await api.post('/auth/login', { email: email.trim(), password });
       setAuth({ user: res.data.user, token: res.data.token });
       toast.success('Welcome back!');
       if (res.data.user.isOnboarded) {
@@ -34,7 +38,10 @@ export default function Login() {
         navigate('/onboarding/role');
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Login failed');
+      const msg = err.response?.data?.error || err.message || 'Unknown error';
+      const status = err.response?.status || 'no status';
+      setDebugError(`Error ${status}: ${msg}`);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -110,6 +117,17 @@ export default function Login() {
             Forgot password?
           </button>
         </div>
+
+        {/* Debug error — visible on screen */}
+        {debugError && (
+          <div style={{
+            background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)',
+            borderRadius: '10px', padding: '10px 14px', fontSize: '13px',
+            color: '#FCA5A5', wordBreak: 'break-all', lineHeight: 1.5,
+          }}>
+            {debugError}
+          </div>
+        )}
 
         {/* Submit */}
         <motion.button
