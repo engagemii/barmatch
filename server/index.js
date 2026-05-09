@@ -43,15 +43,18 @@ const io = new Server(server, {
 
 setupSocket(io);
 
+// Trust Vercel/proxy to get real client IPs for rate limiting
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Rate limiting
+// Rate limiting — generous for demo/testing period
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  windowMs: 15 * 60 * 1000,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' },
@@ -59,7 +62,7 @@ const limiter = rateLimit({
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 50,
+  max: 30,
   message: { error: 'Too many login attempts, please try again later.' },
 });
 
