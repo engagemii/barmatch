@@ -75,7 +75,7 @@ export default function Discover() {
       const res = await api.post('/swipe', { targetId, direction });
       if (res.data.matched) showMatchModal({ matchId: res.data.matchId, otherUser: discover.stack[discover.currentIndex], myUser: auth.user });
       advanceDiscover();
-    } catch { toast.error('Something went wrong'); }
+    } catch { /* swipe errors are non-fatal — ignore */ }
     finally { setSwiping(false); }
   };
 

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from '@use-gesture/react';
 
@@ -13,6 +13,7 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
   }));
 
   const isDragging = useRef(false);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const bind = useDrag(
     ({ active, movement: [mx], velocity: [vx], direction: [dx] }) => {
@@ -52,11 +53,20 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
   const photo = p.avatar || null;
 
   // Background image or fallback gradient
-  const bgStyle = photo
+  const fallbackBg = isBartender
+    ? 'linear-gradient(135deg, #2D1B69, #1A0E3D)'
+    : 'linear-gradient(135deg, #1A2740, #0A1520)';
+
+  const bgStyle = photo && imgLoaded
     ? { backgroundImage: `url(${photo})`, backgroundSize: 'cover', backgroundPosition: 'center top' }
-    : { background: isBartender
-        ? 'linear-gradient(135deg, #2D1B69, #1A0E3D)'
-        : 'linear-gradient(135deg, #1A2740, #0A1520)' };
+    : { background: fallbackBg };
+
+  // Preload image
+  if (photo && !imgLoaded) {
+    const img = new Image();
+    img.src = photo;
+    img.onload = () => setImgLoaded(true);
+  }
 
   return (
     <animated.div
@@ -83,6 +93,7 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
           overflow: 'hidden',
           position: 'relative',
           boxShadow: isTop ? '0 24px 64px rgba(0,0,0,0.7)' : '0 8px 24px rgba(0,0,0,0.4)',
+          transition: 'background-image 0.3s ease',
           ...bgStyle,
         }}
       >
