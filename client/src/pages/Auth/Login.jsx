@@ -15,8 +15,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [debugError, setDebugError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const doLogin = async () => {
     setDebugError('');
     if (!email || !password) {
       setDebugError('Missing email or password');
@@ -25,8 +24,8 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || '(none — using proxy)';
-      setDebugError(`Trying: ${apiUrl}`);
+      const apiUrl = import.meta.env.VITE_API_URL || '(none)';
+      setDebugError(`Calling: ${apiUrl}`);
       const res = await api.post('/auth/login', { email: email.trim(), password });
       setAuth({ user: res.data.user, token: res.data.token });
       toast.success('Welcome back!');
@@ -40,7 +39,7 @@ export default function Login() {
     } catch (err) {
       const msg = err.response?.data?.error || err.message || 'Unknown error';
       const status = err.response?.status || 'no status';
-      setDebugError(`Error ${status}: ${msg}`);
+      setDebugError(`FAILED ${status}: ${msg}`);
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -66,7 +65,7 @@ export default function Login() {
         <p className="text-[#9CA3AF] text-sm mt-1">Sign in to your ShiftMixr account</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {/* Email */}
         <div>
           <label className="text-[#9CA3AF] text-xs font-medium mb-1.5 block">EMAIL ADDRESS</label>
@@ -132,14 +131,15 @@ export default function Login() {
         {/* Submit */}
         <motion.button
           whileTap={{ scale: 0.97 }}
-          type="submit"
+          type="button"
+          onClick={doLogin}
           disabled={loading}
           className="btn-primary mt-2 flex items-center justify-center gap-2"
           style={{ boxShadow: '0 8px 32px rgba(249,115,22,0.35)' }}
         >
           {loading ? <div className="spinner" /> : 'Sign In'}
         </motion.button>
-      </form>
+      </div>
 
       <div className="mt-6 text-center">
         <span className="text-[#9CA3AF] text-sm">Don't have an account? </span>
