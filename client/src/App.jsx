@@ -43,8 +43,11 @@ function AppInner() {
         .then((res) => {
           setAuth({ user: res.data.user, token: auth.token });
         })
-        .catch(() => {
-          logout();
+        .catch((err) => {
+          // Only logout on explicit 401 — don't boot user on network errors
+          if (err.response?.status === 401) {
+            logout();
+          }
         });
     }
   }, []);
