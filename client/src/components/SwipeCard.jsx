@@ -86,7 +86,17 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
         background: fallbackBg,
         boxShadow: isTop ? '0 24px 64px rgba(0,0,0,0.7)' : '0 8px 24px rgba(0,0,0,0.4)',
       }}>
-        {/* Photo — fades in over fallback gradient, no layout shift */}
+        {/* Shimmer while image loads */}
+        {photo && !imgLoaded && (
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 1,
+            background: 'linear-gradient(110deg, #1a1a2e 30%, #2a1f4e 50%, #1a1a2e 70%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 1.4s infinite',
+          }} />
+        )}
+
+        {/* Photo */}
         {photo && (
           <img
             src={photo}
@@ -101,10 +111,11 @@ export default function SwipeCard({ user, onSwipe, isTop, stackIndex }) {
               objectFit: 'cover',
               objectPosition: 'center top',
               opacity: imgLoaded ? 1 : 0,
-              transition: 'opacity 0.2s ease',
+              transition: 'opacity 0.25s ease',
               pointerEvents: 'none',
               userSelect: 'none',
               WebkitUserSelect: 'none',
+              zIndex: 2,
             }}
           />
         )}

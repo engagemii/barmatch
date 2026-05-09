@@ -224,6 +224,12 @@ body {
   box-shadow: 0 0 40px rgba(139, 92, 246, 0.4);
 }
 
+/* Shimmer for card image loading */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Loading spinner */
 @keyframes spin {
   from { transform: rotate(0deg); }

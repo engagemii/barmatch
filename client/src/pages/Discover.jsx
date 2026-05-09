@@ -136,7 +136,7 @@ export default function Discover() {
             <div className="spinner" style={{ width: 40, height: 40 }} />
             <p style={{ color: '#9CA3AF', fontSize: 14 }}>Finding matches...</p>
           </div>
-        ) : emptyStack && !hasCards ? (
+        ) : !hasCards ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 16, padding: '0 32px', textAlign: 'center' }}>
             <div style={{ fontSize: 64 }}>🍸</div>
             <h2 style={{ color: 'white', fontSize: 20, fontWeight: 700 }}>You've seen everyone!</h2>
